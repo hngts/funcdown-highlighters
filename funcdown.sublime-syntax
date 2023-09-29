@@ -2,7 +2,7 @@
 ---
 # See http://www.sublimetext.com/docs/3/syntax.html
 name: funcdown
-file_extensions: [bak, fncd, fncd.phtml, \.]
+file_extensions: [fncd, fncd.phtml]
 hidden_file_extensions: [ \.* ]
 #:[Body]
 scope: markup.bold
