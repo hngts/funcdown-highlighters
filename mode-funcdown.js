@@ -150,7 +150,7 @@ ace.define ("ace/mode/funcdown", [
         "microdown": [
           { token: fncd.microdown, regex: /[\S\b]+\/\//, next: "microdown" },
           { token: fncd.microdown, regex: "\\\\\\+|\\/\\/", next: "microdown" },
-          /*{ token: fncd.php, regex: pcre.php_start, push: "phpContext" },*/
+          { token: fncd.php, regex: pcre.php_start, push: "phpContext" },
           { token: fncd.node, regex: "\\+", next: "pop" },
           { defaultToken: fncd.microdown }
         ],
@@ -161,8 +161,8 @@ ace.define ("ace/mode/funcdown", [
           { token: "string", regex : "'", next : "qstring" }, /* ' string start */
           { token: "constant.numeric", regex : "0[xX][0-9a-fA-F]+\\b" }, /* hex */
           { token: "constant.numeric", regex : "[0-9]" }, /* integers */
-          { token: "storage.type", regex :/(?:true|false|null|use|self|static|parent|final|abstract|private|public|protected|var|namespace|interface|trait|class|const|function|extends|implements)\b/ },
-          { token: "storage.modifier", regex : /(?:__halt_compiler|and|array|as|break|callable|case|catch|clone|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|finally|fn|for|foreach|global|goto|if|include|include_once|insteadof|isset|list|or|print|require|require_once|return|switch|stdClass|throw|try|unset|while|xor|yield|yield from)\b/ },
+          { token: "storage.type", regex :/(?:true|false|null|use|self|static|parent|final|readonly|abstract|private|public|protected|var|namespace|interface|trait|class|const|function|extends|enum|implements)\b/ },
+          { token: "storage.modifier", regex : /(?:__halt_compiler|and|array|as|break|callable|case|catch|match|clone|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|finally|fn|for|foreach|global|goto|if|include|include_once|insteadof|isset|list|or|print|require|require_once|return|switch|stdClass|throw|try|unset|while|xor|yield|yield from)\b/ },
           { token: "variable.language", regex : /(?:int|float|bool|string|real|mixed|object|iterable|__CLASS__|__DIR__|__FILE__|__FUNCTION__|__LINE__|__METHOD__|__NAMESPACE__)\b/ },
           { token: "variable.other", regex : /\$[\w\d]+/ },
           { token : ["keyword", "text", "support.class"], regex : "\\b(new)(\\s+)(\\w+)" },
