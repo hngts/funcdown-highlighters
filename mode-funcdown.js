@@ -113,6 +113,7 @@ ace.define ("ace/mode/funcdown", [
         php_start: "\\\\@\\:|\\\\@=|<\\?php|<\\?=|##\\:|##=",
         php_end: "\\:\\@\\/|\\?>|\\:##",
         fncd_end: "\\^\\}|\\%\\}|\\!\\}|\\}",
+        microdownS: /\b[A-z]+\/\/|\!\/\/|\-\/\/|\+\/\//,
         safestringS: /\{:>>>+\s/,
         safestringE: /\s+<<<:\}+($|\s|\n|\r)/
       };
@@ -128,7 +129,7 @@ ace.define ("ace/mode/funcdown", [
         ],
         "safestring": [
           { token: fncd.content, regex: "\\{|\\\\\\{|\\\\\\}|\\}" },
-          { token: fncd.node, regex: /([a-zA-Z]|[\!_\-])+\/\/+(\b|\@)/, push: "microdown" },
+          { token: fncd.node, regex: pcre.microdownS, push: "microdown" },
           { token: fncd.php, regex: pcre.php_start, push: "phpContext" },
           { token: fncd.attribute_operator, regex: pcre.safestringE, next: "pop" },
           { defaultToken: fncd.content }
@@ -142,7 +143,7 @@ ace.define ("ace/mode/funcdown", [
         ],
         "markup": [
           { token: fncd.content, regex: "\\{|\\\\\\{|\\\\\\}", next: "markup" },
-          { token: fncd.node, regex: /([a-zA-Z]|[\!_\-])+\/\/+(\b|\@)/, push: "microdown" },
+          { token: fncd.node, regex: pcre.microdownS, push: "microdown" },
           { token: fncd.php, regex: pcre.php_start, push: "phpContext" },
           { token: fncd.attribute_operator, regex: pcre.fncd_end, next: "pop" },
           { defaultToken: fncd.content }
