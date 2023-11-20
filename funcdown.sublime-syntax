@@ -7,11 +7,11 @@ hidden_file_extensions: [ \.* ]
 #:[Body]
 scope: markup.bold
 variables:
-  source: '\#\#\:|\#\#\=|\\@\:|\\@\=|<\?php|<\?\='
+  source: '\#\#\:|\#\#\=|<\?php|<\?\='
   safemarkupS: '\{\:\>\>\>\s'
   safemarkupE: '\s\<\<\<\:\}(\s|\n|\r)'
   microdown: '\b[A-z]+//|\!//|\-//|\+//'
-  source_end: '\:\@\/|\?>|\:\#\#'
+  source_end: '\?>|\:\#\#'
 
 contexts:
   main:
