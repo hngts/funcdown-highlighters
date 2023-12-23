@@ -2,16 +2,16 @@
 ---
 # See http://www.sublimetext.com/docs/3/syntax.html
 name: funcdown
-file_extensions: [fncd, fncd.phtml]
+file_extensions: [bak, fncd, fncd.phtml, \.]
 hidden_file_extensions: [ \.* ]
 #:[Body]
-scope: markup.bold
+scope: markup
 variables:
-  source: '\#\#\:|\#\#\=|<\?php|<\?\='
-  safemarkupS: '\{\:\>\>\>\s'
-  safemarkupE: '\s\<\<\<\:\}(\s|\n|\r)'
-  microdown: '\b[A-z]+//|\!//|\-//|\+//'
-  source_end: '\?>|\:\#\#'
+  source: \#\#\:|\#\#\=|<\?php|<\?\=
+  safemarkupS: \{\:\>\>\>\s
+  safemarkupE: \s\<\<\<\:\}(\s|\n|\r)
+  microdown: \b[A-z]+//|\!//|\-//|\+//
+  source_end: \?>|\:\#\#
 
 contexts:
   main:
@@ -39,6 +39,52 @@ contexts:
     - match: \]|\}|\)
       scope: invalid.illegal.stray-bracket-end
 
+  safemarkup: 
+    - meta_scope: string.quoted.triple
+
+    - match: '{{microdown}}'
+      scope: keyword.control
+      push: microdown
+
+    - match: '{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+    - match: '{{safemarkupE}}'
+      scope: keyword.operator.logical
+      pop: true
+
+  markup:
+    - meta_scope: string.unquoted.bold
+    - match: \\\}
+      scope: string.unquoted
+
+    - match: '{{microdown}}'
+      scope: keyword.control
+      push: microdown
+
+    - match: '{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+    - match: \}
+      scope: keyword.operator.logical
+      pop: true
+
+  microdown:
+    - meta_scope: support.type
+
+    - match: \\\+|\\\@
+      scope: support.type
+
+    - match: '{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+    - match: \+
+      scope: keyword.control
+      pop: true
+
   attributes:
     - meta_scope: entity.other.attribute-name
     - match: \\\)|\\\,|\\\{
@@ -58,49 +104,6 @@ contexts:
       scope: keyword.operator.logical
       pop: true
 
-  safemarkup: 
-    - meta_scope: comment.block.documentation
-
-    - match: '{{microdown}}'
-      scope: keyword.control
-      push: microdown
-
-    - match: '{{source}}'
-      push: source
-
-    - match: '{{safemarkupE}}'
-      scope: keyword.operator.logical
-      pop: true
-
-  markup:
-    - meta_scope: comment.block.documentation
-    - match: \\\}
-      scope: comment.block.documentation
-
-    - match: '{{microdown}}'
-      scope: keyword.control
-      push: microdown
-
-    - match: '{{source}}'
-      push: source
-
-    - match: \}
-      scope: keyword.operator.logical
-      pop: true
-
-  microdown:
-    - meta_scope: string.quoted.single
-    - match: \\\+|\\\@
-      scope: string.quoted.single
-
-    - match: '{{source}}'
-      scope: punctuation.section.embedded.begin.php
-      push: source
-
-    - match: '\+'
-      scope: keyword.control
-      pop: true
-
   blocks:
     - match: \]
       scope: keyword.operator.logical
@@ -108,7 +111,7 @@ contexts:
     - include: main
 
   source:
-    - match: '{{source_end}}'
-      pop: true
-    - match: ''
     - include: scope:source.php
+    - match: '{{source_end}}'
+      scope: punctuation.section.embedded.end.php
+      pop: true
