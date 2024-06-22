@@ -13,4 +13,4 @@ Place/save the file into Your `~/.config/sublime-text/Packages/User` directory.
 ### Funcdown
 Funcdown is "c-function syntax alike" markup language generator. 
 
-Go to [Funcdown Playground](https://hardcoder.xyz/?mkp=fncd#) to see it in action.
+Go to [Funcdown Playground](https://hngts.com/?mkp=fncd#) to see it in action.
