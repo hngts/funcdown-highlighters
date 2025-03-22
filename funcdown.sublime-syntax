@@ -2,116 +2,155 @@
 ---
 # See http://www.sublimetext.com/docs/3/syntax.html
 name: funcdown
-file_extensions: [bak, fncd, fncd.phtml, \.]
-hidden_file_extensions: [ \.* ]
+file_extensions: [fncd, fncd.phtml]
+hidden_file_extensions: [ \.fncd, \.fncd.phtml ]
 #:[Body]
-scope: markup
-variables:
-  source: \#\#\:|\#\#\=|<\?php|<\?\=
+scope: source.funcdown 
+variables: 
+  fake_source: \{\{\:|\{\{=
+  fake_source_end: \:\}\}
+  source: \<\?php|\<\?\=
+  source_end: \?\>
   safemarkupS: \{\:\>\>\>\s
-  safemarkupE: \s\<\<\<\:\}(\s|\n|\r)
-  microdown: \b[A-z]+//|\!//|\-//|\+//
-  source_end: \?>|\:\#\#
+  safemarkupE: \s\<\<\<\:\}(\s|\n)
+  microdown: '[a-zA-Z_]+//.*?'
 
 contexts:
   main:
-    - meta_scope: meta.tag
 
-    - match: '{{source}}'
+    - match: '{{fake_source}}|{{source}}'
+      scope: punctuation.section.embedded.begin.php
       push: source
 
-    - match: \[
-      scope: keyword.operator.logical
-      push: blocks
-
-    - match: \(
-      scope: keyword.operator.logical
-      push: attributes
+    - match: '\\.'
+      scope: constant.character.escape.funcdown
 
     - match: '{{safemarkupS}}'
-      scope: keyword.operator.logical
+      scope: variable.other.funcdown
       push: safemarkup
 
     - match: \{
-      scope: keyword.operator.logical
+      scope: variable.other.funcdown
       push: markup
 
-    - match: \]|\}|\)
-      scope: invalid.illegal.stray-bracket-end
+    - match: \(
+      scope: variable.other.funcdown
+      push: attributes
 
-  safemarkup: 
-    - meta_scope: string.quoted.triple
+    - match: \[
+      scope: variable.other.funcdown
+      push: blocks
 
-    - match: '{{microdown}}'
-      scope: keyword.control
-      push: microdown
+    - match: '[a-zA-Z0-9~_\-\.\:\!\*\,]+'
+      scope: source.funcdown
 
-    - match: '{{source}}'
-      scope: punctuation.section.embedded.begin.php
-      push: source
+    - match: \|
+      scope: variable.other.funcdown
 
-    - match: '{{safemarkupE}}'
-      scope: keyword.operator.logical
+  source:
+    - meta_content_scope: source.php
+    - match: '{{fake_source_end}}|{{source_end}}'
+      scope: punctuation.section.embedded.end.php
       pop: true
-
-  markup:
-    - meta_scope: string.unquoted.bold
-    - match: \\\}
-      scope: string.unquoted
-
-    - match: '{{microdown}}'
-      scope: keyword.control
-      push: microdown
-
-    - match: '{{source}}'
-      scope: punctuation.section.embedded.begin.php
-      push: source
-
-    - match: \}
-      scope: keyword.operator.logical
-      pop: true
-
-  microdown:
-    - meta_scope: support.type
-
-    - match: \\\+|\\\@
-      scope: support.type
-
-    - match: '{{source}}'
-      scope: punctuation.section.embedded.begin.php
-      push: source
-
-    - match: \+
-      scope: keyword.control
-      pop: true
+    - include: scope:source.php
+    - include: main
 
   attributes:
-    - meta_scope: entity.other.attribute-name
-    - match: \\\)|\\\,|\\\{
-      scope: entity.other.attribute-name
+    - meta_scope: keyword.control.funcdown
 
-    - match: '\,'
-      scope: keyword.operator
-
-    - match: '{{source}}'
+    - match: '{{fake_source}}|{{source}}'
+      scope: punctuation.section.embedded.begin.php
       push: source
 
+    - match: \\\)|\\\,|\\\{
+      scope: keyword.control.funcdown
+
+    - match: \,
+      scope: markup.italic.funcdown
+
     - match: \{
-      scope: invalid.illegal.stray-bracket-end
+      scope: invalid.illegal.stray-bracket-end.funcdown
       pop: true
 
     - match: \)
-      scope: keyword.operator.logical
+      scope: variable.other.funcdown
       pop: true
 
   blocks:
-    - match: \]
-      scope: keyword.operator.logical
-      pop: true
     - include: main
 
-  source:
-    - include: scope:source.php
-    - match: '{{source_end}}'
-      scope: punctuation.section.embedded.end.php
+
+    - match: \[
+      scope: invalid.illegal.stray-bracket-end.funcdown
+      pop: true
+      
+    - match: \]
+      scope: variable.other.funcdown
+      pop: true
+
+  safemarkup:
+    - meta_content_scope: string.unquoted.funcdown
+
+    - match: '{{microdown}}'
+      scope: markup.bold.funcdown
+      push: microdown
+
+    - match: '{{safemarkupE}}'
+      scope: variable.other.funcdown
+      pop: true
+
+    - match: '{{fake_source}}|{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+  markup:
+    - meta_content_scope: string.funcdown
+
+    - match: '{{microdown}}'
+      scope: markup.bold.funcdown
+      push: microdown
+
+    - match: \\\}
+      scope: string.funcdown
+
+    - match: \}
+      scope: variable.other.funcdown
+      pop: true
+
+    - match: '{{fake_source}}|{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+  microdown:
+    - meta_content_scope: variable.other.funcdown
+
+    - match: \\\+|\\\@
+      scope: markup.italic.funcdown
+
+    - match: '@.*?'
+      scope: markup.italic.funcdown
+      push: microattributes
+
+    - match: \+
+      scope: markup.bold.funcdown
+      pop: true
+
+    - match: '{{fake_source}}|{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+  microattributes:
+    - meta_scope: markup.italic.funcdown
+
+    - match: \\\+|\\\||\\\`
+      scope: markup.italic.funcdown
+
+    - match: '.*?\|\s'
+      scope: variable.other.funcdown
+
+    - match: '{{fake_source}}|{{source}}'
+      scope: punctuation.section.embedded.begin.php
+      push: source
+
+    - match: ''
       pop: true
